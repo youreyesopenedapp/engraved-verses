@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engraved Verses — Written on the Tablet of Your Heart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #F5EFE4; --warm-white: #FAF7F2; --ink: #1A1410;
+      --earth: #7C5C3E; --gold: #B8903A; --gold-light: #D4AC5A;
+      --muted: #9A8A78; --muted-dark: #6B5D4F;
+      --rule: rgba(124,92,62,0.15); --rule-dark: rgba(245,239,228,0.1);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Jost', sans-serif; background: var(--warm-white); color: var(--ink); overflow-x: hidden; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 58px;
+      transition: border-bottom 0.3s ease;
+    }
+    .nav.scrolled { border-bottom: 1px solid rgba(184,144,58,0.2); }
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-weight: 400; font-style: italic;
+      color: var(--gold-light); text-decoration: none;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-brand-star { font-style: normal; font-size: 0.85rem; color: var(--gold); }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Jost', sans-serif; font-size: 0.72rem;
+      font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(245,239,228,0.5); text-decoration: none; transition: color 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--gold-light); }
+    .nav-cta {
+      padding: 0.55rem 1.4rem; background: var(--gold); color: var(--ink);
+      font-family: 'Jost', sans-serif; font-size: 0.7rem;
+      font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.2s ease;
+    }
+    .nav-cta:hover { background: var(--gold-light); }
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: rgba(245,239,228,0.6); transition: all 0.3s ease; }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-mobile {
+      display: none; position: fixed; top: 58px; left: 0; right: 0;
+      background: var(--ink); border-bottom: 1px solid rgba(184,144,58,0.15);
+      flex-direction: column; padding: 1.5rem 2rem 2rem; gap: 0; z-index: 99;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      font-family: 'Jost', sans-serif; font-size: 0.8rem;
+      font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(245,239,228,0.5); text-decoration: none;
+      padding: 0.9rem 0; border-bottom: 1px solid rgba(184,144,58,0.08);
+      transition: color 0.2s ease;
+    }
+    .nav-mobile a:last-child { border-bottom: none; color: var(--gold-light); font-weight: 600; margin-top: 0.5rem; }
+    .nav-mobile a:hover { color: var(--gold-light); }
+    @media (max-width: 860px) { .nav-links { display: none; } .nav-hamburger { display: flex; } }
+    @media (max-width: 480px) { .nav { padding: 0 1.2rem; } }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      position: relative; padding: 8rem 2rem 5rem; background: var(--ink); overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(184,144,58,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 20% 20%, rgba(124,92,62,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; opacity: 0.7;
+    }
+    .hero-eyebrow { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.2rem; animation: fadeUp 1s ease both; position: relative; z-index: 1; }
+    .eyebrow-line { width: 36px; height: 1px; background: var(--gold); opacity: 0.5; }
+    .eyebrow-text { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-light); }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.4rem, 9vw, 7.5rem); font-weight: 300;
+      color: var(--cream); line-height: 0.95; letter-spacing: 0.01em;
+      animation: fadeUp 1s 0.12s ease both; position: relative; z-index: 1;
+    }
+    .hero-title em { font-style: italic; color: var(--gold-light); display: block; }
+    .hero-verse {
+      margin-top: 2rem; font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 300; font-style: italic;
+      color: rgba(245,239,228,0.5); max-width: 480px; line-height: 1.65;
+      animation: fadeUp 1s 0.25s ease both; position: relative; z-index: 1;
+    }
+    .hero-verse cite { display: block; margin-top: 0.5rem; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(184,144,58,0.6); font-style: normal; }
+    .hero-tagline {
+      margin-top: 2.5rem; font-size: clamp(0.95rem, 1.8vw, 1.1rem); font-weight: 300;
+      color: rgba(245,239,228,0.6); max-width: 500px; line-height: 1.8;
+      animation: fadeUp 1s 0.38s ease both; position: relative; z-index: 1;
+    }
+    .hero-ctas { margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 1s 0.5s ease both; position: relative; z-index: 1; }
+    .btn-gold { padding: 1rem 2.4rem; background: var(--gold); color: var(--ink); font-family: 'Jost', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.22s, transform 0.18s; display: inline-block; }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-outline { padding: 1rem 2.4rem; background: transparent; color: rgba(245,239,228,0.7); font-family: 'Jost', sans-serif; font-size: 0.78rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(245,239,228,0.2); cursor: pointer; transition: border-color 0.22s, color 0.22s, transform 0.18s; display: inline-block; }
+    .btn-outline:hover { border-color: var(--gold-light); color: var(--gold-light); transform: translateY(-2px); }
+    .hero-free-note { margin-top: 1.2rem; font-size: 0.7rem; font-weight: 300; color: rgba(245,239,228,0.28); letter-spacing: 0.1em; animation: fadeUp 1s 0.65s ease both; position: relative; z-index: 1; }
+    .hero-scroll { position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; animation: fadeUp 1s 0.9s ease both; z-index: 1; }
+    .hero-scroll span { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,239,228,0.22); }
+    .scroll-tick { width: 1px; height: 32px; background: linear-gradient(to bottom, rgba(184,144,58,0.45), transparent); animation: tickPulse 2.2s ease-in-out infinite; }
+
+    /* SECTION SHARED */
+    .section-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .section-label-line { width: 30px; height: 1px; background: var(--gold); }
+    .section-label span { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+    .section-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.15; color: var(--ink); }
+    .section-heading em { font-style: italic; color: var(--earth); }
+    .section-sub { margin-top: 1rem; font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 480px; }
+
+    /* WHAT */
+    .what { background: var(--warm-white); }
+    .what-inner { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem; text-align: center; }
+    .pull-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 3.5vw, 2.4rem); font-weight: 300; font-style: italic; line-height: 1.55; color: var(--ink); }
+    .pull-quote strong { font-style: normal; font-weight: 600; color: var(--earth); }
+    .what-body { margin-top: 2.4rem; font-size: 1rem; font-weight: 300; line-height: 1.95; color: var(--muted-dark); max-width: 620px; margin-left: auto; margin-right: auto; }
+    .what-body + .what-body { margin-top: 1.2rem; }
+
+    /* MOCKUP */
+    .mockup-section { background: var(--ink); overflow: hidden; }
+    .mockup-inner {
+      max-width: 1060px; margin: 0 auto; padding: 2.5rem 2rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+
+    /* Card stack mockup */
+    .card-mockup-wrap {
+      position: relative;
+      height: 280px;
+    }
+    .card-mockup {
+      position: absolute;
+      width: 100%;
+      border: 1px solid var(--rule-dark);
+      background: var(--ink);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(245,239,228,0.04);
+      padding: 28px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+    }
+    .card-mockup::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(184,144,58,0.065) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card-mockup-back {
+      top: 12px; left: 8px; right: -8px;
+      background: #111009;
+      transform: rotate(1.5deg);
+      z-index: 0;
+    }
+    .card-mockup-mid {
+      top: 6px; left: 4px; right: -4px;
+      background: #161108;
+      transform: rotate(0.6deg);
+      z-index: 1;
+    }
+    .card-mockup-front { top: 0; left: 0; right: 0; z-index: 2; }
+
+    .mock-num { font-size: 0.55rem; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(184,144,58,0.32); position: relative; z-index: 1; }
+    .mock-book { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: var(--cream); line-height: 1; position: relative; z-index: 1; }
+    .mock-ref { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-weight: 300; font-style: italic; color: var(--gold-light); opacity: 0.7; position: relative; z-index: 1; }
+    .mock-rule { width: 32px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.45; }
+    .mock-hint { font-size: 0.62rem; font-weight: 400; color: rgba(245,239,228,0.45); letter-spacing: 0.12em; position: relative; z-index: 1; }
+    .mock-badge {
+      position: absolute; top: 12px; right: 12px;
+      font-size: 0.5rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold-light); border: 1px solid rgba(184,144,58,0.35); padding: 3px 8px;
+      z-index: 3;
+    }
+    .mock-mark-row {
+      position: absolute; bottom: -1px; left: -1px; right: -1px;
+      display: flex; z-index: 3;
+    }
+    .mock-mark-btn {
+      flex: 1; padding: 8px; font-size: 0.55rem; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      border: none; border-top: 1px solid var(--rule-dark);
+      background: transparent; color: rgba(245,239,228,0.3);
+    }
+    .mock-mark-btn + .mock-mark-btn { border-left: 1px solid var(--rule-dark); }
+    .mock-mark-btn.memorized { background: rgba(184,144,58,0.12); color: var(--gold-light); }
+
+    .mockup-callouts { display: flex; flex-direction: column; gap: 2rem; }
+    .mockup-callout-num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: rgba(184,144,58,0.2); line-height: 1; margin-bottom: 0.4rem; }
+    .mockup-callout-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 500; color: var(--cream); margin-bottom: 0.4rem; line-height: 1.3; }
+    .mockup-callout-body { font-size: 0.82rem; font-weight: 300; color: rgba(245,239,228,0.45); line-height: 1.75; }
+
+    @media (max-width: 860px) { .mockup-inner { grid-template-columns: 1fr; gap: 3rem; } .mockup-callouts { gap: 1.5rem; } }
+
+    /* HOW */
+    .how { background: var(--cream); }
+    .how-inner { max-width: 760px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .steps { display: grid; grid-template-columns: 1fr; margin-top: 1.5rem; border: 1px solid var(--rule); }
+    .step { padding: 2rem 2.4rem; border-bottom: 1px solid var(--rule); border-right: none; transition: background 0.22s; display: grid; grid-template-columns: 56px 1fr; gap: 0 1.8rem; align-items: start; }
+    .step:last-child { border-bottom: none; }
+    .step:hover { background: rgba(184,144,58,0.04); }
+    .step-num { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: rgba(184,144,58,0.2); line-height: 1; padding-top: 0.15rem; }
+    .step-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.3; }
+    .step-body { font-size: 0.875rem; font-weight: 300; color: var(--muted); line-height: 1.8; }
+    @media (max-width: 480px) { .step { padding: 1.6rem 1.2rem; grid-template-columns: 44px 1fr; gap: 0 1.2rem; } }
+
+    /* FEATURES */
+    .features { background: var(--ink); }
+    .features-inner { max-width: 1060px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .features .section-label-line { background: var(--gold-light); }
+    .features .section-label span { color: var(--gold-light); }
+    .features .section-heading { color: var(--cream); }
+    .features .section-sub { color: rgba(245,239,228,0.45); }
+    .features-row { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 4rem; border: 1px solid var(--rule-dark); }
+    .feature-item { padding: 2.5rem 2rem; border-right: 1px solid var(--rule-dark); transition: background 0.22s; }
+    .feature-item:last-child { border-right: none; }
+    .feature-item:hover { background: rgba(184,144,58,0.06); }
+    .feature-numeral { font-family: 'Cormorant Garamond', serif; font-size: 0.8rem; font-style: italic; color: var(--gold-light); opacity: 0.6; margin-bottom: 0.8rem; display: block; }
+    .feature-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; color: var(--cream); margin-bottom: 0.65rem; line-height: 1.3; }
+    .feature-desc { font-size: 0.78rem; font-weight: 300; color: rgba(245,239,228,0.38); line-height: 1.75; }
+    @media (max-width: 680px) { .features-row { grid-template-columns: repeat(2, 1fr); } .feature-item:nth-child(2) { border-right: none; } .feature-item:nth-child(3), .feature-item:nth-child(4), .feature-item:nth-child(5), .feature-item:nth-child(6) { border-top: 1px solid var(--rule-dark); } }
+
+    /* VERSE SHOWCASE */
+    .showcase { background: var(--warm-white); }
+    .showcase-inner { max-width: 1060px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .verse-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; margin-top: 1.5rem; border: 1px solid var(--rule); }
+    .verse-item { padding: 2.2rem 2rem; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); transition: background 0.22s; }
+    .verse-item:hover { background: rgba(184,144,58,0.03); }
+    .verse-book { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--earth); margin-bottom: 0.4rem; }
+    .verse-ref { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); opacity: 0.7; margin-bottom: 0.8rem; display: block; }
+    .verse-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; font-weight: 300; color: var(--muted-dark); line-height: 1.7; border-left: 1px solid var(--rule); padding-left: 12px; }
+    .showcase-note { margin-top: 2rem; font-size: 0.78rem; font-weight: 300; color: var(--muted); text-align: center; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+
+    /* PROGRESS */
+    .progress-section { background: var(--cream); }
+    .progress-inner { max-width: 1060px; margin: 0 auto; padding: 2.5rem 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .progress-body { margin-top: 1.8rem; font-size: 0.925rem; font-weight: 300; color: var(--muted-dark); line-height: 1.9; }
+    .progress-body + .progress-body { margin-top: 1rem; }
+    .progress-visual { display: flex; flex-direction: column; border: 1px solid var(--rule); }
+    .progress-visual-row { padding: 1.6rem 2rem; border-bottom: 1px solid var(--rule); display: flex; align-items: flex-start; gap: 1.2rem; }
+    .progress-visual-row:last-child { border-bottom: none; }
+    .pv-mark { width: 18px; height: 18px; border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; font-size: 0.6rem; color: var(--gold); }
+    .pv-text { font-size: 0.875rem; font-weight: 300; color: var(--muted-dark); line-height: 1.65; }
+    .pv-text strong { display: block; font-weight: 500; color: var(--ink); margin-bottom: 0.2rem; font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+    @media (max-width: 720px) { .progress-inner { grid-template-columns: 1fr; gap: 3rem; } }
+
+    /* PROMISE */
+    .promise { background: var(--ink); }
+    .promise-inner { max-width: 760px; margin: 0 auto; padding: 2.8rem 2rem; text-align: center; }
+    .promise-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.45rem, 3vw, 2.1rem); font-weight: 300; font-style: italic; line-height: 1.65; color: rgba(245,239,228,0.75); }
+    .promise-quote strong { font-style: normal; font-weight: 500; color: var(--gold-light); }
+    .promise-attr { margin-top: 2rem; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(184,144,58,0.45); }
+
+    /* CTA */
+    .cta-section { background: var(--warm-white); }
+    .cta-inner { max-width: 660px; margin: 0 auto; padding: 2.8rem 2rem; text-align: center; }
+    .cta-rule { width: 36px; height: 1px; background: var(--gold); margin: 0 auto 1.4rem; }
+    .cta-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 300; line-height: 1.15; color: var(--ink); }
+    .cta-heading em { font-style: italic; color: var(--earth); }
+    .cta-body { margin-top: 1.4rem; font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.85; }
+    .cta-actions { margin-top: 2.8rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-gold-dark { padding: 1.1rem 2.8rem; background: var(--ink); color: var(--cream); font-family: 'Jost', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.22s, transform 0.18s; display: inline-block; }
+    .btn-gold-dark:hover { background: var(--earth); transform: translateY(-2px); }
+    .btn-outline-dark { padding: 1.1rem 2.8rem; background: transparent; color: var(--muted-dark); font-family: 'Jost', sans-serif; font-size: 0.78rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--rule); cursor: pointer; transition: border-color 0.22s, color 0.22s, transform 0.18s; display: inline-block; }
+    .btn-outline-dark:hover { border-color: var(--earth); color: var(--earth); transform: translateY(-2px); }
+    .cta-note { margin-top: 1.4rem; font-size: 0.72rem; font-weight: 300; color: var(--muted); letter-spacing: 0.07em; line-height: 1.9; }
+
+    /* FOOTER */
+    footer { background: var(--ink); padding: 2.5rem 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+    .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 300; font-style: italic; color: rgba(245,239,228,0.5); }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.65rem; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,239,228,0.22); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(245,239,228,0.5); }
+    .footer-copy { font-size: 0.68rem; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,239,228,0.15); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* REVIEWS */
+    .reviews-section { background: var(--cream); }
+    .reviews-inner { max-width: 1060px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+    .reviews-summary {
+      display: flex; align-items: center; gap: 2rem;
+      margin-top: 3rem; margin-bottom: 4rem;
+      padding-bottom: 3rem; border-bottom: 1px solid var(--rule);
+      flex-wrap: wrap;
+    }
+    .reviews-avg {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.4rem; min-width: 100px;
+    }
+    .reviews-avg-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem; font-weight: 300; color: var(--ink); line-height: 1;
+    }
+    .reviews-avg-stars { display: flex; gap: 3px; }
+    .star { color: var(--gold); font-size: 1rem; }
+    .star.empty { color: rgba(124,92,62,0.2); }
+    .reviews-avg-count { font-size: 0.68rem; font-weight: 300; color: var(--muted); letter-spacing: 0.08em; }
+
+    .reviews-bars { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; }
+    .bar-label { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; color: var(--muted); width: 14px; text-align: right; }
+    .bar-track { flex: 1; height: 4px; background: rgba(124,92,62,0.1); }
+    .bar-fill { height: 100%; background: var(--gold); transition: width 0.8s ease; }
+    .bar-count { font-size: 0.6rem; color: var(--muted); width: 16px; }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 0;
+      border: 1px solid var(--rule);
+      margin-bottom: 3rem;
+    }
+    .review-card {
+      padding: 2rem 2.2rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      transition: background 0.2s;
+    }
+    .review-card:hover { background: rgba(184,144,58,0.03); }
+    .review-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.8rem; gap: 1rem; }
+    .review-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+    .review-date { font-size: 0.6rem; font-weight: 300; color: var(--muted); letter-spacing: 0.06em; white-space: nowrap; margin-top: 2px; }
+    .review-stars { display: flex; gap: 2px; margin-bottom: 0.9rem; }
+    .review-stars .star { font-size: 0.8rem; }
+    .review-comment {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 0.95rem; font-weight: 300; color: var(--muted-dark);
+      line-height: 1.7; border-left: 1px solid var(--rule); padding-left: 12px;
+    }
+    .review-reply {
+      margin-top: 1.2rem; padding: 1rem 1.2rem;
+      background: rgba(124,92,62,0.05); border-left: 2px solid var(--gold);
+    }
+    .review-reply-label {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; display: block;
+    }
+    .review-reply-text {
+      font-size: 0.82rem; font-weight: 300; color: var(--muted-dark); line-height: 1.7;
+    }
+    .reviews-empty {
+      text-align: center; padding: 3rem; border: 1px solid var(--rule);
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.1rem; color: var(--muted); margin-bottom: 3rem;
+    }
+    .reviews-loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; font-weight: 300; }
+
+    /* Review form */
+    .review-form-wrap {
+      border: 1px solid var(--rule); padding: 3rem 2.8rem;
+      background: var(--warm-white); max-width: 640px; margin: 0 auto;
+    }
+    .review-form-heading {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
+      font-weight: 400; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.2;
+    }
+    .review-form-heading em { font-style: italic; color: var(--earth); }
+    .review-form-sub { font-size: 0.82rem; font-weight: 300; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+    .form-field { margin-bottom: 1.2rem; }
+    .form-label { display: block; font-size: 0.62rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-dark); margin-bottom: 0.5rem; }
+    .form-input, .form-textarea {
+      width: 100%; padding: 10px 14px;
+      background: white; border: 1px solid var(--rule);
+      color: var(--ink); font-family: 'Jost', sans-serif;
+      font-size: 0.9rem; font-weight: 300; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--gold); }
+    .form-textarea { resize: vertical; min-height: 90px; }
+    .star-picker { display: flex; gap: 8px; }
+    .star-pick {
+      font-size: 1.6rem; cursor: pointer; color: rgba(124,92,62,0.2);
+      transition: color 0.15s, transform 0.15s; line-height: 1;
+      background: none; border: none; padding: 0;
+    }
+    .star-pick:hover, .star-pick.selected { color: var(--gold); transform: scale(1.15); }
+    .form-submit {
+      width: 100%; padding: 12px; background: var(--ink); color: var(--cream);
+      font-family: 'Jost', sans-serif; font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase; border: none;
+      cursor: pointer; transition: background 0.2s, transform 0.15s; margin-top: 0.4rem;
+    }
+    .form-submit:hover { background: var(--earth); transform: translateY(-1px); }
+    .form-submit:disabled { opacity: 0.5; cursor: default; transform: none; }
+    .form-success {
+      display: none; text-align: center; padding: 2rem;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.1rem; color: var(--earth); line-height: 1.7;
+    }
+    .form-error { font-size: 0.72rem; color: #8b2a2a; margin-top: 0.4rem; display: none; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes tickPulse { 0%,100% { opacity:.35; } 50% { opacity:.9; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="main-nav">
+  <a href="/" class="nav-brand">Engraved Verses<span class="nav-brand-star">✦</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#verses">The Verses</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <a href="#study" class="nav-cta">Start Studying Free</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="#how">How It Works</a>
+  <a href="#verses">The Verses</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#study">Start Studying Free →</a>
+</div>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="eyebrow-line"></span>
+    <span class="eyebrow-text">Learn Scripture from every book</span>
+    <span class="eyebrow-line"></span>
+  </div>
+  <h1 class="hero-title">Engraved<em>Verses</em></h1>
+  <div class="hero-verse">
+    <p>Engrave them on the tablet of your heart.</p>
+  </div>
+  <p class="hero-tagline">66 Scripture flashcards — one from every book of the Bible. Flip, study, and mark your way through all of them until the Word is written where it belongs.</p>
+  <div class="hero-ctas">
+    <a href="#study" class="btn-gold">Start Studying Free</a>
+    <a href="#how" class="btn-outline">How It Works</a>
+  </div>
+  <p class="hero-free-note">Free to use &nbsp;·&nbsp; No account required &nbsp;·&nbsp; Your progress saves with an email address</p>
+  <div class="hero-scroll"><div class="scroll-tick"></div><span>Scroll</span></div>
+</section>
+
+
+<!-- WHAT -->
+<section class="what" id="what">
+  <div class="what-inner">
+    <p class="pull-quote reveal">Every book of the Bible has a verse worth knowing by heart.<br><strong>Engraved Verses helps you learn them.</strong></p>
+    <p class="what-body reveal">One carefully chosen verse from every book of the Bible — from Genesis to Revelation. Not a random selection, but the verses that have anchored believers across generations.</p>
+    <p class="what-body reveal">Flip a card. Read the verse. Mark what you know. Come back to learn more.</p>
+  </div>
+</section>
+
+
+<!-- HOW IT WORKS — consolidated -->
+<section class="how" id="how">
+  <div class="how-inner">
+
+    <!-- Card mockup -->
+    <div style="display:flex;justify-content:center;margin-bottom:1rem;" class="reveal">
+      <div class="card-mockup-wrap" style="max-width:480px;width:100%;">
+        <div class="card-mockup card-mockup-back"></div>
+        <div class="card-mockup card-mockup-mid"></div>
+        <div class="card-mockup card-mockup-front">
+          <div class="mock-badge">Memorized</div>
+          <div class="mock-num">23 of 66</div>
+          <div class="mock-book">Isaiah</div>
+          <div class="mock-ref">Isaiah 40:31</div>
+          <div class="mock-rule"></div>
+          <div class="mock-hint">tap to reveal the verse</div>
+          <div class="mock-mark-row">
+            <button class="mock-mark-btn">Still Studying</button>
+            <button class="mock-mark-btn memorized">Memorized</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section heading -->
+    <div class="section-label reveal"><span class="section-label-line"></span><span>How it works</span></div>
+    <h2 class="section-heading reveal">Simple by design.<br><em>Faithful by intention.</em></h2>
+    <p class="section-sub reveal">A free Scripture flashcard app. No account required — all 66 cards available immediately.</p>
+
+    <!-- Four steps -->
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div><h3 class="step-title">Open the Deck</h3>
+        <p class="step-body">All 66 cards are available immediately — no signup, no barrier. Study in canonical order or shuffle the deck. Filter by Old Testament, New Testament, or memorization status at any time.</p></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div><h3 class="step-title">Flip &amp; Study</h3>
+        <p class="step-body">The book name and verse reference are on the front. Swipe on mobile or use the arrow keys on desktop to flip the card and reveal the full KJV verse text on the back. Study book-to-verse or verse-to-book.</p></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div><h3 class="step-title">Mark Your Progress</h3>
+        <p class="step-body">Mark each verse as Still Studying or Memorized. Filter your deck to focus on the verses you're still learning. Watch the Memorized verse count grow with faithful practice.</p></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div><h3 class="step-title">Save Your Place</h3>
+        <p class="step-body">Enter your email address to save your progress. Progress is saved to this browser and device.</p></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- VERSE SHOWCASE -->
+<section class="showcase" id="verses">
+  <div class="showcase-inner">
+    <div class="section-label reveal"><span class="section-label-line"></span><span>A few of the 66</span></div>
+    <h2 class="section-heading reveal">Verses worth<br><em>knowing by heart.</em></h2>
+    <p class="section-sub reveal">These are the passages that will carry you through heartbreak, healing, and ordinary days.</p>
+    <div class="verse-grid reveal">
+      <div class="verse-item">
+        <div class="verse-book">Psalms</div>
+        <span class="verse-ref">Psalm 23:1</span>
+        <p class="verse-text">"The LORD is my shepherd; I shall not want."</p>
+      </div>
+      <div class="verse-item">
+        <div class="verse-book">Jeremiah</div>
+        <span class="verse-ref">Jeremiah 29:11</span>
+        <p class="verse-text">"For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end."</p>
+      </div>
+      <div class="verse-item">
+        <div class="verse-book">Isaiah</div>
+        <span class="verse-ref">Isaiah 40:31</span>
+        <p class="verse-text">"They that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint."</p>
+      </div>
+      <div class="verse-item">
+        <div class="verse-book">John</div>
+        <span class="verse-ref">John 3:16</span>
+        <p class="verse-text">"For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."</p>
+      </div>
+      <div class="verse-item">
+        <div class="verse-book">Proverbs</div>
+        <span class="verse-ref">Proverbs 3:5–6</span>
+        <p class="verse-text">"Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths."</p>
+      </div>
+      <div class="verse-item">
+        <div class="verse-book">Philippians</div>
+        <span class="verse-ref">Philippians 4:13</span>
+        <p class="verse-text">"I can do all things through Christ which strengtheneth me."</p>
+      </div>
+    </div>
+    <p class="showcase-note reveal">Plus 60 more — one from every book, from Genesis to Revelation.</p>
+  </div>
+</section>
+
+
+<!-- PROMISE -->
+<section class="promise">
+  <div class="promise-inner">
+    <p class="promise-quote reveal">The Word is not meant to stay on the page.<br>It's meant to be <strong>carried. Recalled. Alive in you.</strong><br>Engraved Verses exists to help it take root.</p>
+    <p class="promise-attr reveal">The heart behind Engraved Verses</p>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta-section" id="study">
+  <div class="cta-inner">
+    <div class="cta-rule reveal"></div>
+    <h2 class="cta-heading reveal">The deck is open.<br><em>Start wherever you are.</em></h2>
+    <p class="cta-body reveal">All 66 cards, free to study immediately. No account needed to begin. Mark your progress, filter your deck, and enter your email when you're ready to save where you've been.</p>
+    <div class="cta-actions reveal">
+      <a href="/app" class="btn-gold-dark">Open the Deck</a>
+      <a href="#how" class="btn-outline-dark">How It Works</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- REVIEWS -->
+<section class="reviews-section" id="reviews">
+  <div class="reviews-inner">
+    <div class="section-label reveal"><span class="section-label-line"></span><span>What people are saying</span></div>
+    <h2 class="section-heading reveal">From those who've<br><em>studied with us.</em></h2>
+
+    <div class="reviews-summary reveal" id="reviewsSummary" style="display:none">
+      <div class="reviews-avg">
+        <div class="reviews-avg-num" id="avgNum">—</div>
+        <div class="reviews-avg-stars" id="avgStars"></div>
+        <div class="reviews-avg-count" id="avgCount"></div>
+      </div>
+      <div class="reviews-bars" id="ratingBars"></div>
+    </div>
+
+    <div class="reviews-loading" id="reviewsLoading">Loading reviews…</div>
+    <div class="reviews-grid" id="reviewsGrid" style="display:none"></div>
+    <div class="reviews-empty" id="reviewsEmpty" style="display:none">
+      No reviews yet — be the first to share your experience.
+    </div>
+
+    <div class="review-form-wrap reveal">
+      <div id="reviewFormInner">
+        <h3 class="review-form-heading">Share your <em>experience.</em></h3>
+        <p class="review-form-sub">Have you been studying with Engraved Verses? We'd love to hear how it's going.</p>
+        <div class="form-field">
+          <label class="form-label" for="reviewName">Your name</label>
+          <input class="form-input" id="reviewName" type="text" placeholder="First name or initials" maxlength="60">
+          <div class="form-error" id="nameError">Please enter your name.</div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Your rating</label>
+          <div class="star-picker" id="starPicker">
+            <button class="star-pick" data-v="1" title="1 star">★</button>
+            <button class="star-pick" data-v="2" title="2 stars">★</button>
+            <button class="star-pick" data-v="3" title="3 stars">★</button>
+            <button class="star-pick" data-v="4" title="4 stars">★</button>
+            <button class="star-pick" data-v="5" title="5 stars">★</button>
+          </div>
+          <div class="form-error" id="ratingError">Please select a rating.</div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="reviewComment">Comment <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <textarea class="form-textarea" id="reviewComment" placeholder="What did you find most helpful?" maxlength="400"></textarea>
+        </div>
+        <button class="form-submit" id="reviewSubmit">Submit Review</button>
+        <div class="form-error" id="submitError" style="text-align:center;margin-top:0.8rem"></div>
+      </div>
+      <div class="form-success" id="reviewSuccess">
+        ✦<br><br>
+        Thank you — your review has been received.<br>
+        <span style="font-size:0.8rem;font-style:normal;font-family:'Jost',sans-serif;color:var(--muted);font-weight:300">It will appear shortly.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">Engraved Verses</span>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="/cdn-cgi/l/email-protection#157d7079797a55707b72677463707163706766703b767a78">Contact</a>
+  </div>
+  <a href="https://youreyesopened.com" class="footer-links" style="text-decoration:none"><span style="color:rgba(245,239,228,0.22);font-size:0.65rem;font-weight:300;letter-spacing:0.14em;text-transform:uppercase;">An Eyes Opened App</span></a>
+  <span class="footer-copy">Built with the assistance of AI</span>
+  <span class="footer-copy">Written on the tablet of your heart &nbsp;·&nbsp; © 2026 Engraved Verses</span>
+</footer>
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── CONFIG — replace with your Supabase project values ──
+  const SUPABASE_URL  = 'https://qxdyhsuayzqcknxdkbim.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHloc3VheXpxY2tueGRrYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNDE3NzcsImV4cCI6MjA5NTcxNzc3N30.pxHlv9EHZwkm8Fqe2eZuHBePWFjKIKs2UARdeji6ubo';
+
+  // ── NAV ──
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+  const hamburger = document.getElementById('hamburger');
+  const navMobile = document.getElementById('nav-mobile');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navMobile.classList.toggle('open');
+  });
+  navMobile.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    hamburger.classList.remove('open'); navMobile.classList.remove('open');
+  }));
+
+  // ── REVEAL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const siblings = Array.from(e.target.parentElement.querySelectorAll('.reveal:not(.in)'));
+        const i = siblings.indexOf(e.target);
+        setTimeout(() => e.target.classList.add('in'), Math.min(i * 80, 240));
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (!href || href === '#') return;
+      const target = document.querySelector(href);
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // ── PROFANITY FILTER (basic) ──
+  const PROFANITY = ['damn','hell','shit','fuck','ass','bitch','crap','piss','bastard','dick','cunt'];
+  function hasProfanity(text) {
+    if (!text) return false;
+    const lower = text.toLowerCase();
+    return PROFANITY.some(w => lower.includes(w));
+  }
+
+  // ── STAR RATING ──
+  let selectedRating = 0;
+  const stars = document.querySelectorAll('.star-pick');
+  stars.forEach(s => {
+    s.addEventListener('mouseenter', () => stars.forEach(x => x.classList.toggle('selected', +x.dataset.v <= +s.dataset.v)));
+    s.addEventListener('mouseleave', () => stars.forEach(x => x.classList.toggle('selected', +x.dataset.v <= selectedRating)));
+    s.addEventListener('click', () => { selectedRating = +s.dataset.v; stars.forEach(x => x.classList.toggle('selected', +x.dataset.v <= selectedRating)); });
+  });
+
+  // ── RENDER HELPERS ──
+  function starsHtml(rating, size = '0.9rem') {
+    return Array.from({length:5}, (_, i) =>
+      `<span class="star${i < rating ? '' : ' empty'}" style="font-size:${size}">★</span>`
+    ).join('');
+  }
+  function formatDate(iso) {
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  // ── LOAD & RENDER REVIEWS ──
+  async function loadReviews() {
+    document.getElementById('reviewsLoading').style.display = 'block';
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/reviews?select=*&approved=eq.true&flagged=eq.false&order=created_at.desc`,
+        { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+      );
+      if (!res.ok) throw new Error();
+      const reviews = await res.json();
+      renderReviews(reviews);
+    } catch {
+      document.getElementById('reviewsLoading').textContent = 'Reviews could not be loaded.';
+    }
+  }
+
+  function renderReviews(reviews) {
+    document.getElementById('reviewsLoading').style.display = 'none';
+    if (!reviews.length) {
+      document.getElementById('reviewsEmpty').style.display = 'block';
+      return;
+    }
+
+    // Summary
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+    const counts = [0,0,0,0,0];
+    reviews.forEach(r => counts[r.rating - 1]++);
+    document.getElementById('avgNum').textContent = avg.toFixed(1);
+    document.getElementById('avgStars').innerHTML = starsHtml(Math.round(avg), '1rem');
+    document.getElementById('avgCount').textContent = `${reviews.length} review${reviews.length !== 1 ? 's' : ''}`;
+    const barsEl = document.getElementById('ratingBars');
+    barsEl.innerHTML = [5,4,3,2,1].map(n => {
+      const pct = reviews.length ? Math.round((counts[n-1] / reviews.length) * 100) : 0;
+      return `<div class="bar-row">
+        <span class="bar-label">${n}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <span class="bar-count">${counts[n-1]}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('reviewsSummary').style.display = 'flex';
+
+    // Cards
+    const grid = document.getElementById('reviewsGrid');
+    grid.innerHTML = reviews.map(r => `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">${escHtml(r.name)}</div>
+          <div class="review-date">${formatDate(r.created_at)}</div>
+        </div>
+        <div class="review-stars">${starsHtml(r.rating)}</div>
+        ${r.comment ? `<p class="review-comment">"${escHtml(r.comment)}"</p>` : ''}
+        ${r.reply ? `
+          <div class="review-reply">
+            <span class="review-reply-label">Response from Engraved Verses</span>
+            <p class="review-reply-text">${escHtml(r.reply)}</p>
+          </div>` : ''}
+      </div>
+    `).join('');
+    grid.style.display = 'grid';
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── SUBMIT REVIEW ──
+  document.getElementById('reviewSubmit').addEventListener('click', async () => {
+    const name    = document.getElementById('reviewName').value.trim();
+    const comment = document.getElementById('reviewComment').value.trim();
+    let valid = true;
+
+    document.getElementById('nameError').style.display   = 'none';
+    document.getElementById('ratingError').style.display = 'none';
+    document.getElementById('submitError').style.display = 'none';
+
+    if (!name)           { document.getElementById('nameError').style.display   = 'block'; valid = false; }
+    if (!selectedRating) { document.getElementById('ratingError').style.display = 'block'; valid = false; }
+    if (!valid) return;
+
+    const flagged = hasProfanity(name) || hasProfanity(comment);
+
+    const btn = document.getElementById('reviewSubmit');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/reviews`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ name, rating: selectedRating, comment: comment || null, flagged })
+      });
+      if (!res.ok) throw new Error();
+      document.getElementById('reviewFormInner').style.display = 'none';
+      document.getElementById('reviewSuccess').style.display = 'block';
+      // Reload reviews list
+      loadReviews();
+    } catch {
+      document.getElementById('submitError').textContent = 'Something went wrong. Please try again.';
+      document.getElementById('submitError').style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Submit Review';
+    }
+  });
+
+  // ── INIT ──
+  loadReviews();
+</script>
