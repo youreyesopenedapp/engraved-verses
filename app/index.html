@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engraved Verses</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #F5EFE4;
+  --warm-white: #FAF7F2;
+  --ink: #1A1410;
+  --earth: #7C5C3E;
+  --gold: #B8903A;
+  --gold-light: #D4AC5A;
+  --muted: #9A8A78;
+  --muted-dark: #6B5D4F;
+  --rule: rgba(124,92,62,0.15);
+  --rule-dark: rgba(245,239,228,0.1);
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: 'Jost', sans-serif;
+  background: var(--ink);
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 0;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(184,144,58,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 15% 15%, rgba(124,92,62,0.07) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 52px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* HEADER */
+.header {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--rule-dark);
+  margin-bottom: 32px;
+  animation: fadeUp 0.9s ease both;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.eyebrow-line { width: 28px; height: 1px; background: var(--gold); opacity: 0.5; }
+.eyebrow-text {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+.header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.header h1 em { font-style: italic; color: var(--gold-light); }
+.header-sub {
+  margin-top: 10px;
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.3);
+  letter-spacing: 0.1em;
+}
+
+/* CONTROLS */
+.controls-block {
+  width: 100%;
+  margin-bottom: 28px;
+  animation: fadeUp 0.9s 0.08s ease both;
+}
+.control-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.control-row:last-child { margin-bottom: 0; }
+
+.btn {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 7px 15px;
+  border: 1px solid rgba(245,239,228,0.14);
+  background: transparent;
+  color: rgba(245,239,228,0.38);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn:hover { border-color: var(--gold-light); color: var(--gold-light); }
+.btn.active {
+  border-color: var(--gold);
+  background: rgba(184,144,58,0.11);
+  color: var(--gold-light);
+}
+
+/* PROGRESS */
+.progress-block {
+  width: 100%;
+  margin-bottom: 20px;
+  animation: fadeUp 0.9s 0.14s ease both;
+}
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.progress-label {
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(245,239,228,0.25);
+}
+.progress-count {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold-light);
+  opacity: 0.65;
+}
+.progress-bar {
+  width: 100%;
+  height: 1px;
+  background: rgba(245,239,228,0.07);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--earth), var(--gold));
+  transition: width 0.5s ease;
+}
+
+/* TESTAMENT BADGE */
+.testament-badge {
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid;
+  margin-bottom: 14px;
+  animation: fadeUp 0.9s 0.18s ease both;
+}
+.badge-ot { color: var(--earth); border-color: rgba(124,92,62,0.38); }
+.badge-nt { color: var(--gold-light); border-color: rgba(184,144,58,0.32); }
+
+/* CARD */
+.scene {
+  width: 100%;
+  perspective: 1400px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.9s 0.22s ease both;
+}
+.scene.slide-left  { animation: slideLeft  0.3s ease both; }
+.scene.slide-right { animation: slideRight 0.3s ease both; }
+@keyframes slideLeft  { from { opacity:0; transform:translateX(44px); } to { opacity:1; transform:translateX(0); } }
+@keyframes slideRight { from { opacity:0; transform:translateX(-44px); } to { opacity:1; transform:translateX(0); } }
+
+.card-wrap {
+  position: relative;
+  width: 100%;
+  height: 310px;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  cursor: pointer;
+}
+.card-wrap.flipped {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 44px 44px 36px;
+  border: 1px solid var(--rule-dark);
+  background: var(--ink);
+  box-shadow: 0 28px 70px rgba(0,0,0,0.55), inset 0 1px 0 rgba(245,239,228,0.04);
+  position: absolute;
+}
+
+.card-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 65% 45% at 50% 0%, rgba(184,144,58,0.065) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  background: #1D1610;
+}
+.card-back::before {
+  background: radial-gradient(ellipse 65% 45% at 50% 100%, rgba(184,144,58,0.075) 0%, transparent 70%);
+}
+
+/* front */
+.front-num {
+  font-size: 0.56rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(184,144,58,0.32);
+  position: relative; z-index: 1;
+}
+.front-book {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1;
+  position: relative; z-index: 1;
+}
+.front-ref {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold-light);
+  opacity: 0.7;
+  letter-spacing: 0.06em;
+  position: relative; z-index: 1;
+}
+.front-rule {
+  width: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.45;
+}
+.front-hint {
+  font-size: 0.65rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.2);
+  letter-spacing: 0.1em;
+  position: relative; z-index: 1;
+}
+
+/* back */
+.back-ref {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.75;
+  position: relative; z-index: 1;
+}
+.back-verse {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.98rem, 2.3vw, 1.24rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.74;
+  color: rgba(245,239,228,0.8);
+  border-left: 1px solid rgba(184,144,58,0.32);
+  padding-left: 16px;
+  text-align: left;
+  max-width: 480px;
+  position: relative; z-index: 1;
+}
+.back-book {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245,239,228,0.18);
+  position: relative; z-index: 1;
+}
+
+/* NAV */
+.nav-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.9s 0.28s ease both;
+}
+.nav-arrow {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(245,239,228,0.14);
+  background: transparent;
+  color: rgba(245,239,228,0.4);
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.nav-arrow:hover:not(:disabled) { border-color: var(--gold); color: var(--gold-light); }
+.nav-arrow:disabled { opacity: 0.18; cursor: default; }
+
+.btn-flip {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 11px 30px;
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-flip:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* STATS */
+.stats-block {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--rule-dark);
+  margin-bottom: 28px;
+  animation: fadeUp 0.9s 0.34s ease both;
+}
+.stat {
+  flex: 1;
+  padding: 16px 10px;
+  text-align: center;
+  border-right: 1px solid var(--rule-dark);
+  transition: background 0.2s;
+}
+.stat:last-child { border-right: none; }
+.stat:hover { background: rgba(184,144,58,0.04); }
+.stat-value {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem;
+  font-weight: 300;
+  color: var(--gold-light);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245,239,228,0.25);
+}
+
+/* MARK STATUS BUTTONS — always visible */
+.mark-block {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 16px;
+  transition: opacity 0.25s ease;
+  animation: fadeUp 0.9s 0.28s ease both;
+}
+.btn-mark {
+  flex: 1;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 9px 10px;
+  border: 1px solid rgba(245,239,228,0.14);
+  background: transparent;
+  color: rgba(245,239,228,0.38);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-mark:hover { border-color: rgba(245,239,228,0.35); color: rgba(245,239,228,0.7); }
+.btn-mark.active-studying {
+  border-color: var(--earth);
+  background: rgba(124,92,62,0.15);
+  color: #c8a87a;
+}
+.btn-mark.active-memorized {
+  border-color: var(--gold);
+  background: rgba(184,144,58,0.15);
+  color: var(--gold-light);
+}
+
+/* Memorized ribbon on card front */
+.memorized-ribbon {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 0.52rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  border: 1px solid rgba(184,144,58,0.35);
+  padding: 3px 8px;
+  z-index: 2;
+}
+.card-wrap.is-memorized .memorized-ribbon { display: block; }
+.card-wrap.is-studying .memorized-ribbon {
+  display: block;
+  color: #c8a87a;
+  border-color: rgba(124,92,62,0.4);
+}
+
+/* DISCLAIMER */
+.disclaimer {
+  width: 100%;
+  border: 1px solid var(--rule-dark);
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  display: none;
+  animation: fadeUp 0.5s ease both;
+}
+.disclaimer.visible { display: block; }
+.disclaimer-text {
+  font-size: 0.65rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.3);
+  line-height: 1.75;
+  letter-spacing: 0.03em;
+}
+.disclaimer-text strong {
+  font-weight: 500;
+  color: rgba(245,239,228,0.45);
+}
+
+/* KB HINT */
+.kb-hint {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem;
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(245,239,228,0.2);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+  animation: fadeUp 0.9s 0.4s ease both;
+}
+.kb-key {
+  font-style: normal;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid rgba(245,239,228,0.14);
+  padding: 2px 7px;
+  color: rgba(245,239,228,0.28);
+  vertical-align: middle;
+}
+
+/* FOOTER */
+.footer {
+  width: 100%;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule-dark);
+  text-align: center;
+  animation: fadeUp 0.9s 0.45s ease both;
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(245,239,228,0.2);
+}
+
+/* ─── REVIEWS ─── */
+.reviews-section {
+  width: 100%;
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid var(--rule-dark);
+  animation: fadeUp 0.9s 0.5s ease both;
+}
+.reviews-heading-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+}
+.reviews-heading-line { width: 22px; height: 1px; background: var(--gold); opacity: 0.5; }
+.reviews-heading-text {
+  font-size: 0.58rem; font-weight: 500; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--gold-light);
+}
+.reviews-summary-bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 0 20px; border-bottom: 1px solid var(--rule-dark);
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.reviews-avg-num {
+  font-family: 'Cormorant Garamond', serif; font-size: 2.4rem;
+  font-weight: 300; color: var(--gold-light); line-height: 1;
+}
+.rev-stars { display: flex; gap: 2px; }
+.rev-star { font-size: 0.8rem; color: var(--gold); }
+.rev-star.empty { color: rgba(245,239,228,0.12); }
+.reviews-count { font-size: 0.6rem; font-weight: 300; color: rgba(245,239,228,0.3); letter-spacing: 0.06em; }
+
+.review-cards { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+.review-card-app {
+  padding: 18px 0; border-bottom: 1px solid var(--rule-dark);
+}
+.review-card-app:last-child { border-bottom: none; }
+.review-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 1rem; }
+.review-card-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500; color: var(--cream); }
+.review-card-date { font-size: 0.58rem; font-weight: 300; color: rgba(245,239,228,0.28); letter-spacing: 0.05em; white-space: nowrap; }
+.review-card-stars { display: flex; gap: 2px; margin-bottom: 8px; }
+.review-card-comment {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 0.9rem; font-weight: 300; color: rgba(245,239,228,0.6);
+  line-height: 1.65; border-left: 1px solid rgba(184,144,58,0.25); padding-left: 10px;
+}
+.review-card-reply {
+  margin-top: 10px; padding: 10px 12px;
+  background: rgba(184,144,58,0.07); border-left: 2px solid rgba(184,144,58,0.4);
+}
+.review-card-reply-label {
+  font-size: 0.52rem; font-weight: 500; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 4px; display: block;
+  opacity: 0.8;
+}
+.review-card-reply-text { font-size: 0.78rem; font-weight: 300; color: rgba(245,239,228,0.5); line-height: 1.65; }
+
+.reviews-empty-app {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 0.95rem; color: rgba(245,239,228,0.28); text-align: center;
+  padding: 20px 0; margin-bottom: 20px;
+}
+.reviews-loading-app { font-size: 0.72rem; font-weight: 300; color: rgba(245,239,228,0.25); text-align: center; padding: 16px 0; }
+
+/* In-app review form */
+.review-form-app { border-top: 1px solid var(--rule-dark); padding-top: 24px; }
+.review-form-app-heading {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+  font-weight: 300; font-style: italic; color: var(--cream); margin-bottom: 16px; line-height: 1.2;
+}
+.app-form-field { margin-bottom: 12px; }
+.app-form-label {
+  display: block; font-size: 0.56rem; font-weight: 500; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(245,239,228,0.35); margin-bottom: 5px;
+}
+.app-form-input, .app-form-textarea {
+  width: 100%; padding: 9px 12px;
+  background: rgba(245,239,228,0.05); border: 1px solid rgba(245,239,228,0.12);
+  color: var(--cream); font-family: 'Jost', sans-serif;
+  font-size: 0.85rem; font-weight: 300; outline: none; transition: border-color 0.2s;
+}
+.app-form-input:focus, .app-form-textarea:focus { border-color: var(--gold); }
+.app-form-input::placeholder, .app-form-textarea::placeholder { color: rgba(245,239,228,0.2); }
+.app-form-textarea { resize: vertical; min-height: 72px; }
+.app-star-picker { display: flex; gap: 6px; }
+.app-star-pick {
+  font-size: 1.4rem; cursor: pointer; color: rgba(245,239,228,0.12);
+  transition: color 0.15s, transform 0.15s; background: none; border: none; padding: 0; line-height: 1;
+}
+.app-star-pick:hover, .app-star-pick.selected { color: var(--gold); transform: scale(1.15); }
+.app-form-submit {
+  width: 100%; padding: 10px; background: var(--gold); color: var(--ink);
+  font-family: 'Jost', sans-serif; font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; border: none;
+  cursor: pointer; transition: background 0.2s, transform 0.15s; margin-top: 4px;
+}
+.app-form-submit:hover { background: var(--gold-light); transform: translateY(-1px); }
+.app-form-submit:disabled { opacity: 0.45; cursor: default; transform: none; }
+.app-form-error { font-size: 0.65rem; color: #c87a7a; margin-top: 4px; display: none; }
+.app-form-success {
+  display: none; text-align: center; padding: 20px 0;
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 1rem; color: var(--gold-light); line-height: 1.7; opacity: 0.8;
+}
+
+/* ─── EMAIL MODAL ─── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,20,16,0.88);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.modal-backdrop.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  width: 100%;
+  max-width: 480px;
+  background: var(--ink);
+  border: 1px solid var(--rule-dark);
+  padding: 44px 40px 40px;
+  position: relative;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(245,239,228,0.04);
+  transform: translateY(16px);
+  transition: transform 0.35s ease;
+}
+.modal-backdrop.visible .modal {
+  transform: translateY(0);
+}
+.modal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(184,144,58,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.modal-dismiss {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: rgba(245,239,228,0.25);
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  line-height: 1;
+  padding: 4px 6px;
+  transition: color 0.2s;
+}
+.modal-dismiss:hover { color: rgba(245,239,228,0.6); }
+
+.modal-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.modal-eyebrow-line { width: 22px; height: 1px; background: var(--gold); opacity: 0.45; }
+.modal-eyebrow-text {
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+.modal-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.15;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+.modal-heading em { font-style: italic; color: var(--gold-light); }
+.modal-body {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.45);
+  line-height: 1.8;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.modal-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(245,239,228,0.05);
+  border: 1px solid rgba(245,239,228,0.14);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.modal-input::placeholder { color: rgba(245,239,228,0.25); }
+.modal-input:focus { border-color: var(--gold); }
+.modal-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.modal-submit:hover { background: var(--gold-light); transform: translateY(-1px); }
+.modal-skip {
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.22);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 4px;
+}
+.modal-skip:hover { color: rgba(245,239,228,0.5); }
+.modal-privacy {
+  font-size: 0.6rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.18);
+  letter-spacing: 0.06em;
+  text-align: center;
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Thank-you state */
+.modal-thankyou {
+  text-align: center;
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+.modal-thankyou.visible { display: block; }
+.modal-thankyou-icon {
+  font-size: 1.4rem;
+  margin-bottom: 14px;
+  color: var(--gold-light);
+  opacity: 0.7;
+}
+.modal-thankyou-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cream);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.modal-thankyou-body {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: rgba(245,239,228,0.45);
+  line-height: 1.8;
+  margin-bottom: 22px;
+}
+.modal-thankyou-btn {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 11px 28px;
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.modal-thankyou-btn:hover { background: var(--gold-light); }
+
+/* Save progress indicator */
+.save-indicator {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease both;
+}
+.save-indicator.visible { display: flex; }
+.save-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .card-face { padding: 32px 22px 28px; }
+  .back-verse { font-size: 0.93rem; }
+  .nav-arrow { width: 36px; height: 36px; }
+  .btn-flip { padding: 11px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div class="eyebrow">
+      <span class="eyebrow-line"></span>
+      <span class="eyebrow-text">Engraved Verses</span>
+      <span class="eyebrow-line"></span>
+    </div>
+    <h1>Engraved <em>Verses</em></h1>
+    <p class="header-sub">One verse from every book of the Bible &nbsp;·&nbsp; 66 cards</p>
+  </header>
+
+  <div class="controls-block">
+    <div class="control-row">
+      <button class="btn active" id="btnSequential" onclick="setMode('sequential')">In Order</button>
+      <button class="btn" id="btnShuffle" onclick="setMode('shuffle')">Shuffle</button>
+      <button class="btn active" id="btnBookFirst" onclick="setFlipMode('book')">Book & Ref → Verse</button>
+      <button class="btn" id="btnVerseFirst" onclick="setFlipMode('verse')">Verse → Book & Ref</button>
+    </div>
+    <div class="control-row">
+      <button class="btn active" id="filterAll" onclick="setFilter('all')">All 66</button>
+      <button class="btn" id="filterOT" onclick="setFilter('ot')">Old Testament</button>
+      <button class="btn" id="filterNT" onclick="setFilter('nt')">New Testament</button>
+    </div>
+    <div class="control-row">
+      <button class="btn active" id="filterStatusAll" onclick="setStatusFilter('all')">All</button>
+      <button class="btn" id="filterStudying" onclick="setStatusFilter('studying')">Studying</button>
+      <button class="btn" id="filterMemorized" onclick="setStatusFilter('memorized')">Memorized</button>
+    </div>
+  </div>
+
+  <div class="progress-block">
+    <div class="progress-meta">
+      <span class="progress-label">Progress</span>
+      <span class="progress-count" id="progressCount">1 / 66</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:1.5%"></div>
+    </div>
+  </div>
+
+  <div class="save-indicator" id="saveIndicator">
+    <span class="save-dot"></span>
+    Progress saving
+  </div>
+
+  <div class="testament-badge badge-ot" id="testamentBadge">Old Testament</div>
+
+  <div class="scene" id="scene">
+    <div class="card-wrap" id="cardWrap" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div class="memorized-ribbon" id="memorizedRibbon">Memorized</div>
+        <div class="front-num" id="frontNum">01</div>
+        <div class="front-book" id="frontBook">Genesis</div>
+        <div class="front-ref" id="frontRef">Genesis 1:1</div>
+        <div class="front-rule"></div>
+        <div class="front-hint">tap to reveal the verse</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="back-ref" id="backRef">Genesis 1:1</div>
+        <div class="back-verse" id="backVerse">"In the beginning God created the heavens and the earth."</div>
+        <div class="back-book" id="backBook">Genesis</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mark status -->
+  <div class="mark-block" id="markBlock">
+    <button class="btn-mark" id="btnStudying" onclick="markCard('studying')">Still Studying</button>
+    <button class="btn-mark" id="btnMemorized" onclick="markCard('memorized')">Memorized</button>
+  </div>
+
+  <div class="nav-block">
+    <button class="nav-arrow" id="prevBtn" onclick="navigate(-1)">&#8592;</button>
+    <button class="btn-flip" onclick="flipCard()">Flip Card</button>
+    <button class="nav-arrow" id="nextBtn" onclick="navigate(1)">&#8594;</button>
+  </div>
+
+  <div class="stats-block">
+    <div class="stat">
+      <span class="stat-value" id="statTotal">66</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="statStudying">0</span>
+      <span class="stat-label">Studying</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="statMemorized">0</span>
+      <span class="stat-label">Memorized</span>
+    </div>
+  </div>
+
+  <div class="disclaimer" id="disclaimer">
+    <p class="disclaimer-text"><strong>Progress is saved on this browser &amp; device only.</strong> Clearing your browser data or switching devices will reset your progress. This is a known limitation of browser-based storage.</p>
+  </div>
+
+  <p class="kb-hint">
+    <span class="kb-key">Space</span> to flip &nbsp;·&nbsp; <span class="kb-key">←</span> <span class="kb-key">→</span> to navigate &nbsp;·&nbsp; <span class="kb-key">S</span> to shuffle
+  </p>
+
+  <!-- REVIEWS -->
+  <div class="reviews-section" id="appReviewsSection">
+    <div class="reviews-heading-row">
+      <span class="reviews-heading-line"></span>
+      <span class="reviews-heading-text">What people are saying</span>
+    </div>
+
+    <div class="reviews-loading-app" id="appReviewsLoading">Loading reviews…</div>
+
+    <div class="reviews-summary-bar" id="appReviewsSummary" style="display:none">
+      <div class="reviews-avg-num" id="appAvgNum">—</div>
+      <div>
+        <div class="rev-stars" id="appAvgStars"></div>
+        <div class="reviews-count" id="appAvgCount"></div>
+      </div>
+    </div>
+
+    <div class="review-cards" id="appReviewCards"></div>
+    <div class="reviews-empty-app" id="appReviewsEmpty" style="display:none">No reviews yet — be the first.</div>
+
+    <div class="review-form-app">
+      <div id="appReviewFormInner">
+        <p class="review-form-app-heading">Leave a review</p>
+        <div class="app-form-field">
+          <label class="app-form-label" for="appReviewName">Your name</label>
+          <input class="app-form-input" id="appReviewName" type="text" placeholder="First name or initials" maxlength="60">
+          <div class="app-form-error" id="appNameError">Please enter your name.</div>
+        </div>
+        <div class="app-form-field">
+          <label class="app-form-label">Rating</label>
+          <div class="app-star-picker" id="appStarPicker">
+            <button class="app-star-pick" data-v="1">★</button>
+            <button class="app-star-pick" data-v="2">★</button>
+            <button class="app-star-pick" data-v="3">★</button>
+            <button class="app-star-pick" data-v="4">★</button>
+            <button class="app-star-pick" data-v="5">★</button>
+          </div>
+          <div class="app-form-error" id="appRatingError">Please select a rating.</div>
+        </div>
+        <div class="app-form-field">
+          <label class="app-form-label" for="appReviewComment">Comment <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <textarea class="app-form-textarea" id="appReviewComment" placeholder="What did you find most helpful?" maxlength="400"></textarea>
+        </div>
+        <button class="app-form-submit" id="appReviewSubmit">Submit Review</button>
+        <div class="app-form-error" id="appSubmitError" style="text-align:center;margin-top:8px"></div>
+      </div>
+      <div class="app-form-success" id="appReviewSuccess">✦<br><br>Thank you — your review has been received.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-brand">Engraved Verses</span>
+    <a href="https://youreyesopened.com" style="margin-top:6px;font-size:0.58rem;font-weight:300;letter-spacing:0.18em;text-transform:uppercase;color:rgba(245,239,228,0.18);text-decoration:none;">An Eyes Opened App</a>
+    <span style="margin-top:4px;font-size:0.56rem;font-weight:300;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,239,228,0.14);">Built with the assistance of AI</span>
+  </div>
+
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <button class="modal-dismiss" id="modalDismiss" aria-label="Dismiss">✕</button>
+
+    <!-- Capture form -->
+    <div id="modalCapture">
+      <div class="modal-eyebrow">
+        <span class="modal-eyebrow-line"></span>
+        <span class="modal-eyebrow-text">Keep going</span>
+      </div>
+      <h2 class="modal-heading">Save your <em>progress.</em></h2>
+      <p class="modal-body">You've made a real start. Enter your email to unlock progress saving — and be the first to hear what's coming from Engraved Verses.</p>
+      <div class="modal-form">
+        <input class="modal-input" id="emailInput" type="email" placeholder="your@email.com" autocomplete="email">
+        <button class="modal-submit" id="modalSubmit">Unlock Progress Saving</button>
+        <button class="modal-skip" id="modalSkip">Not now — keep studying</button>
+      </div>
+      <p class="modal-privacy">No spam. No sharing. Unsubscribe anytime.</p>
+    </div>
+
+    <!-- Thank-you state -->
+    <div class="modal-thankyou" id="modalThankyou">
+      <div class="modal-thankyou-icon">✦</div>
+      <div class="modal-thankyou-heading">You're in.</div>
+      <p class="modal-thankyou-body">Your progress will now be saved on this browser and device as you mark verses Studying or Memorized. Keep going — the Word is worth knowing by heart.</p>
+      <button class="modal-thankyou-btn" id="modalContinue">Continue Studying</button>
+    </div>
+  </div>
+</div>
+<script>
+const ALL_CARDS = [
+  { num:'01', book:'Genesis',         testament:'ot', ref:'Genesis 1:1',            verse:'"In the beginning God created the heaven and the earth."' },
+  { num:'02', book:'Exodus',          testament:'ot', ref:'Exodus 14:14',            verse:'"The LORD shall fight for you, and ye shall hold your peace."' },
+  { num:'03', book:'Leviticus',       testament:'ot', ref:'Leviticus 19:18',         verse:'"Thou shalt not avenge, nor bear any grudge against the children of thy people, but thou shalt love thy neighbour as thyself: I am the LORD."' },
+  { num:'04', book:'Numbers',         testament:'ot', ref:'Numbers 6:24–26',         verse:'"The LORD bless thee, and keep thee: the LORD make his face shine upon thee, and be gracious unto thee: the LORD lift up his countenance upon thee, and give thee peace."' },
+  { num:'05', book:'Deuteronomy',     testament:'ot', ref:'Deuteronomy 6:5',         verse:'"And thou shalt love the LORD thy God with all thine heart, and with all thy soul, and with all thy might."' },
+  { num:'06', book:'Joshua',          testament:'ot', ref:'Joshua 1:9',              verse:'"Have I not commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest."' },
+  { num:'07', book:'Judges',          testament:'ot', ref:'Judges 21:25',            verse:'"In those days there was no king in Israel: every man did that which was right in his own eyes."' },
+  { num:'08', book:'Ruth',            testament:'ot', ref:'Ruth 1:16',               verse:'"And Ruth said, Intreat me not to leave thee, or to return from following after thee: for whither thou goest, I will go; and where thou lodgest, I will lodge: thy people shall be my people, and thy God my God."' },
+  { num:'09', book:'1 Samuel',        testament:'ot', ref:'1 Samuel 16:7',           verse:'"But the LORD said unto Samuel, Look not on his countenance, or on the height of his stature; because I have refused him: for the LORD seeth not as man seeth; for man looketh on the outward appearance, but the LORD looketh on the heart."' },
+  { num:'10', book:'2 Samuel',        testament:'ot', ref:'2 Samuel 22:2–3',         verse:'"And he said, the LORD is my rock, and my fortress, and my deliverer; the God of my rock; in him will I trust: he is my shield, and the horn of my salvation, my high tower, and my refuge, my saviour; thou savest me from violence."' },
+  { num:'11', book:'1 Kings',         testament:'ot', ref:'1 Kings 18:21',           verse:'"And Elijah came unto all the people, and said, How long halt ye between two opinions? if the LORD be God, follow him: but if Baal, then follow him. And the people answered him not a word."' },
+  { num:'12', book:'2 Kings',         testament:'ot', ref:'2 Kings 6:16',            verse:'"And he answered, Fear not: for they that be with us are more than they that be with them."' },
+  { num:'13', book:'1 Chronicles',    testament:'ot', ref:'1 Chronicles 16:11',      verse:'"Seek the LORD and his strength, seek his face continually."' },
+  { num:'14', book:'2 Chronicles',    testament:'ot', ref:'2 Chronicles 7:14',       verse:'"If my people, which are called by my name, shall humble themselves, and pray, and seek my face, and turn from their wicked ways; then will I hear from heaven, and will forgive their sin, and will heal their land."' },
+  { num:'15', book:'Ezra',            testament:'ot', ref:'Ezra 7:10',               verse:'"For Ezra had prepared his heart to seek the law of the LORD, and to do it, and to teach in Israel statutes and judgments."' },
+  { num:'16', book:'Nehemiah',        testament:'ot', ref:'Nehemiah 8:10',           verse:'"Then he said unto them, Go your way, eat the fat, and drink the sweet, and send portions unto them for whom nothing is prepared: for this day is holy unto our LORD: neither be ye sorry; for the joy of the LORD is your strength."' },
+  { num:'17', book:'Esther',          testament:'ot', ref:'Esther 4:14',             verse:'"For if thou altogether holdest thy peace at this time, then shall there enlargement and deliverance arise to the Jews from another place; but thou and thy father\'s house shall be destroyed: and who knoweth whether thou art come to the kingdom for such a time as this?"' },
+  { num:'18', book:'Job',             testament:'ot', ref:'Job 19:25',               verse:'"I know that my redeemer liveth, and that he shall stand at the latter day upon the earth."' },
+  { num:'19', book:'Psalms',          testament:'ot', ref:'Psalm 23:1',              verse:'"The LORD is my shepherd; I shall not want."' },
+  { num:'20', book:'Proverbs',        testament:'ot', ref:'Proverbs 3:5–6',          verse:'"Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths."' },
+  { num:'21', book:'Ecclesiastes',    testament:'ot', ref:'Ecclesiastes 12:13',      verse:'"Let us hear the conclusion of the whole matter: Fear God, and keep his commandments: for this is the whole duty of man."' },
+  { num:'22', book:'Song of Songs',   testament:'ot', ref:'Song of Solomon 8:7',     verse:'"Many waters cannot quench love, neither can the floods drown it: if a man would give all the substance of his house for love, it would utterly be contemned."' },
+  { num:'23', book:'Isaiah',          testament:'ot', ref:'Isaiah 40:31',            verse:'"They that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint."' },
+  { num:'24', book:'Jeremiah',        testament:'ot', ref:'Jeremiah 29:11',          verse:'"For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end."' },
+  { num:'25', book:'Lamentations',    testament:'ot', ref:'Lamentations 3:22–23',    verse:'"It is of the LORD\'s mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness."' },
+  { num:'26', book:'Ezekiel',         testament:'ot', ref:'Ezekiel 36:26',           verse:'"A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh."' },
+  { num:'27', book:'Daniel',          testament:'ot', ref:'Daniel 3:17–18',          verse:'"If it be so, our God whom we serve is able to deliver us from the burning fiery furnace, and he will deliver us out of thine hand, O king. But if not, be it known unto thee, O king, that we will not serve thy gods, nor worship the golden image which thou hast set up."' },
+  { num:'28', book:'Hosea',           testament:'ot', ref:'Hosea 6:6',               verse:'"For I desired mercy, and not sacrifice; and the knowledge of God more than burnt offerings."' },
+  { num:'29', book:'Joel',            testament:'ot', ref:'Joel 2:28',               verse:'"And it shall come to pass afterward, that I will pour out my spirit upon all flesh; and your sons and your daughters shall prophesy, your old men shall dream dreams, your young men shall see visions."' },
+  { num:'30', book:'Amos',            testament:'ot', ref:'Amos 5:24',               verse:'"But let judgment run down as waters, and righteousness as a mighty stream."' },
+  { num:'31', book:'Obadiah',         testament:'ot', ref:'Obadiah 1:15',            verse:'"For the day of the LORD is near upon all the heathen: as thou hast done, it shall be done unto thee: thy reward shall return upon thine own head."' },
+  { num:'32', book:'Jonah',           testament:'ot', ref:'Jonah 2:9',               verse:'"But I will sacrifice unto thee with the voice of thanksgiving; I will pay that I have vowed. Salvation is of the LORD."' },
+  { num:'33', book:'Micah',           testament:'ot', ref:'Micah 6:8',               verse:'"He hath shewed thee, O man, what is good; and what doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?"' },
+  { num:'34', book:'Nahum',           testament:'ot', ref:'Nahum 1:7',               verse:'"The LORD is good, a strong hold in the day of trouble; and he knoweth them that trust in him."' },
+  { num:'35', book:'Habakkuk',        testament:'ot', ref:'Habakkuk 3:17–18',        verse:'"Although the fig tree shall not blossom, neither shall fruit be in the vines; the labour of the olive shall fail, and the fields shall yield no meat; the flock shall be cut off from the fold, and there shall be no herd in the stalls: Yet I will rejoice in the LORD, I will joy in the God of my salvation."' },
+  { num:'36', book:'Zephaniah',       testament:'ot', ref:'Zephaniah 3:17',          verse:'"The LORD thy God in the midst of thee is mighty; he will save, he will rejoice over thee with joy; he will rest in his love, he will joy over thee with singing."' },
+  { num:'37', book:'Haggai',          testament:'ot', ref:'Haggai 2:9',              verse:'"The glory of this latter house shall be greater than of the former, saith the LORD of hosts: and in this place will I give peace, saith the LORD of hosts."' },
+  { num:'38', book:'Zechariah',       testament:'ot', ref:'Zechariah 4:6',           verse:'"Then he answered and spake unto me, saying, This is the word of the LORD unto Zerubbabel, saying, Not by might, nor by power, but by my spirit, saith the LORD of hosts."' },
+  { num:'39', book:'Malachi',         testament:'ot', ref:'Malachi 3:10',            verse:'"Bring ye all the tithes into the storehouse, that there may be meat in mine house, and prove me now herewith, saith the LORD of hosts, if I will not open you the windows of heaven, and pour you out a blessing, that there shall not be room enough to receive it."' },
+  { num:'40', book:'Matthew',         testament:'nt', ref:'Matthew 28:19–20',        verse:'"Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost: Teaching them to observe all things whatsoever I have commanded you: and, lo, I am with you always, even unto the end of the world. Amen."' },
+  { num:'41', book:'Mark',            testament:'nt', ref:'Mark 10:45',              verse:'"For even the Son of man came not to be ministered unto, but to minister, and to give his life a ransom for many."' },
+  { num:'42', book:'Luke',            testament:'nt', ref:'Luke 1:37',               verse:'"For with God nothing shall be impossible."' },
+  { num:'43', book:'John',            testament:'nt', ref:'John 3:16',               verse:'"For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."' },
+  { num:'44', book:'Acts',            testament:'nt', ref:'Acts 1:8',                verse:'"But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me both in Jerusalem, and in all Judaea, and in Samaria, and unto the uttermost part of the earth."' },
+  { num:'45', book:'Romans',          testament:'nt', ref:'Romans 8:28',             verse:'"And we know that all things work together for good to them that love God, to them who are the called according to his purpose."' },
+  { num:'46', book:'1 Corinthians',   testament:'nt', ref:'1 Corinthians 13:13',     verse:'"And now abideth faith, hope, charity, these three; but the greatest of these is charity."' },
+  { num:'47', book:'2 Corinthians',   testament:'nt', ref:'2 Corinthians 5:17',      verse:'"Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new."' },
+  { num:'48', book:'Galatians',       testament:'nt', ref:'Galatians 2:20',          verse:'"I am crucified with Christ: nevertheless I live; yet not I, but Christ liveth in me: and the life which I now live in the flesh I live by the faith of the Son of God, who loved me, and gave himself for me."' },
+  { num:'49', book:'Ephesians',       testament:'nt', ref:'Ephesians 2:8–9',         verse:'"For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast."' },
+  { num:'50', book:'Philippians',     testament:'nt', ref:'Philippians 4:13',        verse:'"I can do all things through Christ which strengtheneth me."' },
+  { num:'51', book:'Colossians',      testament:'nt', ref:'Colossians 3:23–24',      verse:'"And whatsoever ye do, do it heartily, as to the Lord, and not unto men; Knowing that of the Lord ye shall receive the reward of the inheritance: for ye serve the Lord Christ."' },
+  { num:'52', book:'1 Thessalonians', testament:'nt', ref:'1 Thessalonians 5:16–18', verse:'"Rejoice evermore. Pray without ceasing. In every thing give thanks: for this is the will of God in Christ Jesus concerning you."' },
+  { num:'53', book:'2 Thessalonians', testament:'nt', ref:'2 Thessalonians 3:3',     verse:'"But the Lord is faithful, who shall stablish you, and keep you from evil."' },
+  { num:'54', book:'1 Timothy',       testament:'nt', ref:'1 Timothy 6:6',           verse:'"But godliness with contentment is great gain."' },
+  { num:'55', book:'2 Timothy',       testament:'nt', ref:'2 Timothy 3:16–17',       verse:'"All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness: That the man of God may be perfect, throughly furnished unto all good works."' },
+  { num:'56', book:'Titus',           testament:'nt', ref:'Titus 3:5',               verse:'"Not by works of righteousness which we have done, but according to his mercy he saved us, by the washing of regeneration, and renewing of the Holy Ghost."' },
+  { num:'57', book:'Philemon',        testament:'nt', ref:'Philemon 1:6',             verse:'"That the communication of thy faith may become effectual by the acknowledging of every good thing which is in you in Christ Jesus."' },
+  { num:'58', book:'Hebrews',         testament:'nt', ref:'Hebrews 11:1',            verse:'"Now faith is the substance of things hoped for, the evidence of things not seen."' },
+  { num:'59', book:'James',           testament:'nt', ref:'James 1:2–3',             verse:'"My brethren, count it all joy when ye fall into divers temptations; Knowing this, that the trying of your faith worketh patience."' },
+  { num:'60', book:'1 Peter',         testament:'nt', ref:'1 Peter 5:7',             verse:'"Casting all your care upon him; for he careth for you."' },
+  { num:'61', book:'2 Peter',         testament:'nt', ref:'2 Peter 3:9',             verse:'"The Lord is not slack concerning his promise, as some men count slackness; but is longsuffering to us-ward, not willing that any should perish, but that all should come to repentance."' },
+  { num:'62', book:'1 John',          testament:'nt', ref:'1 John 4:8',              verse:'"He that loveth not knoweth not God; for God is love."' },
+  { num:'63', book:'2 John',          testament:'nt', ref:'2 John 1:6',              verse:'"And this is love, that we walk after his commandments. This is the commandment, That, as ye have heard from the beginning, ye should walk in it."' },
+  { num:'64', book:'3 John',          testament:'nt', ref:'3 John 1:4',              verse:'"I have no greater joy than to hear that my children walk in truth."' },
+  { num:'65', book:'Jude',            testament:'nt', ref:'Jude 1:24–25',            verse:'"Now unto him that is able to keep you from falling, and to present you faultless before the presence of his glory with exceeding joy, To the only wise God our Saviour, be glory and majesty, dominion and power, both now and ever. Amen."' },
+  { num:'66', book:'Revelation',      testament:'nt', ref:'Revelation 21:4',         verse:'"And God shall wipe away all tears from their eyes; and there shall be no more death, neither sorrow, nor crying, neither shall there be any more pain: for the former things are passed away."' },
+];
+
+// ── LOCALSTORAGE ──
+const LS_KEY = 'engraved-verse-progress';
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+}
+function saveProgress() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(cardStatus)); } catch {}
+}
+
+// cardStatus: { [ref]: 'studying' | 'memorized' }
+let cardStatus = loadProgress();
+
+// ── STATE ──
+let mode = 'sequential', flipMode = 'book', filter = 'all', statusFilter = 'all';
+let deck = [...ALL_CARDS], idx = 0, isFlipped = false;
+let seen = new Set([0]);
+let flipCount = 0;
+let emailCaptured = false;
+let promptDismissed = false;
+let deckCompleted = false;
+
+function filteredDeck() {
+  let cards = [...ALL_CARDS];
+  if (filter === 'ot') cards = cards.filter(c => c.testament === 'ot');
+  if (filter === 'nt') cards = cards.filter(c => c.testament === 'nt');
+  if (statusFilter === 'studying') cards = cards.filter(c => cardStatus[c.ref] === 'studying');
+  if (statusFilter === 'memorized') cards = cards.filter(c => cardStatus[c.ref] === 'memorized');
+  return cards;
+}
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function resetFlip() {
+  isFlipped = false;
+  document.getElementById('cardWrap').classList.toggle('flipped', flipMode === 'verse');
+
+}
+function setMode(m) {
+  mode = m;
+  deck = m === 'shuffle' ? shuffle(filteredDeck()) : filteredDeck();
+  idx = 0; seen = new Set([0]); deckCompleted = false;
+  document.getElementById('btnSequential').classList.toggle('active', m==='sequential');
+  document.getElementById('btnShuffle').classList.toggle('active', m==='shuffle');
+  resetFlip(); renderCard('right');
+}
+function setFlipMode(fm) {
+  flipMode = fm;
+  document.getElementById('btnBookFirst').classList.toggle('active', fm==='book');
+  document.getElementById('btnVerseFirst').classList.toggle('active', fm==='verse');
+  isFlipped = false;
+  document.getElementById('cardWrap').classList.toggle('flipped', fm==='verse');
+
+}
+function setFilter(f) {
+  filter = f;
+  deck = mode==='shuffle' ? shuffle(filteredDeck()) : filteredDeck();
+  idx = 0; seen = new Set([0]); deckCompleted = false;
+  ['filterAll','filterOT','filterNT'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('filter'+(f==='all'?'All':f==='ot'?'OT':'NT')).classList.add('active');
+  resetFlip(); renderCard('right');
+}
+function setStatusFilter(sf) {
+  statusFilter = sf;
+  deck = mode==='shuffle' ? shuffle(filteredDeck()) : filteredDeck();
+  idx = 0; seen = new Set([0]); deckCompleted = false;
+  ['filterStatusAll','filterStudying','filterMemorized'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(sf==='all'?'filterStatusAll':sf==='studying'?'filterStudying':'filterMemorized').classList.add('active');
+  resetFlip(); renderCard('right');
+}
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('cardWrap').classList.toggle('flipped', flipMode==='verse' ? !isFlipped : isFlipped);
+  // Reveal mark buttons on first flip of this card
+
+
+  if (!emailCaptured) {
+    flipCount++;
+    if (flipCount >= 10 && !promptDismissed) showModal();
+  }
+}
+function markCard(status) {
+  const c = deck[idx];
+  // Toggle off if already set to this status
+  if (cardStatus[c.ref] === status) {
+    delete cardStatus[c.ref];
+  } else {
+    cardStatus[c.ref] = status;
+  }
+  saveProgress();
+  updateMarkButtons();
+  updateCardRibbon();
+  updateStats();
+}
+function navigate(dir) {
+  const n = idx + dir;
+  if (n<0 || n>=deck.length) return;
+  idx = n; seen.add(idx);
+  if (idx === deck.length-1 && !deckCompleted) {
+    deckCompleted = true;
+    if (promptDismissed && !emailCaptured) {
+      setTimeout(() => { promptDismissed = false; flipCount = 0; showModal(); }, 600);
+    }
+  }
+  resetFlip(); renderCard(dir>0?'left':'right');
+}
+
+function updateMarkButtons() {
+  if (!deck[idx]) return;
+  const status = cardStatus[deck[idx].ref];
+  document.getElementById('btnStudying').className = 'btn-mark' + (status==='studying' ? ' active-studying' : '');
+  document.getElementById('btnMemorized').className = 'btn-mark' + (status==='memorized' ? ' active-memorized' : '');
+}
+function updateCardRibbon() {
+  if (!deck[idx]) return;
+  const status = cardStatus[deck[idx].ref];
+  const wrap = document.getElementById('cardWrap');
+  wrap.classList.toggle('is-memorized', status==='memorized');
+  wrap.classList.toggle('is-studying', status==='studying');
+  const ribbon = document.getElementById('memorizedRibbon');
+  ribbon.textContent = status==='memorized' ? 'Memorized' : status==='studying' ? 'Studying' : '';
+}
+function updateStats() {
+  const studying = Object.values(cardStatus).filter(v=>v==='studying').length;
+  const memorized = Object.values(cardStatus).filter(v=>v==='memorized').length;
+  document.getElementById('statTotal').textContent = ALL_CARDS.length;
+  document.getElementById('statStudying').textContent = studying;
+  document.getElementById('statMemorized').textContent = memorized;
+}
+
+function renderCard(slideDir) {
+  if (!deck.length) {
+    // Empty deck state
+    document.getElementById('frontBook').textContent = 'No cards';
+    document.getElementById('frontRef').textContent = '';
+    document.getElementById('frontNum').textContent = '';
+    document.getElementById('backVerse').textContent = 'No cards match this filter.';
+    document.getElementById('backRef').textContent = '';
+    document.getElementById('backBook').textContent = '';
+    document.getElementById('progressCount').textContent = '0 / 0';
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('nextBtn').disabled = true;
+    return;
+  }
+  const c = deck[idx];
+  document.getElementById('frontNum').textContent = c.num;
+  document.getElementById('frontBook').textContent = c.book;
+  document.getElementById('frontRef').textContent = c.ref;
+  document.getElementById('backRef').textContent = c.ref;
+  document.getElementById('backVerse').textContent = c.verse;
+  document.getElementById('backBook').textContent = c.book;
+  const badge = document.getElementById('testamentBadge');
+  badge.textContent = c.testament==='ot' ? 'Old Testament' : 'New Testament';
+  badge.className = 'testament-badge '+(c.testament==='ot'?'badge-ot':'badge-nt');
+  const total = deck.length;
+  const pct = Math.max(1.5, Math.round(((idx+1)/total)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressCount').textContent = (idx+1)+' / '+total;
+  document.getElementById('prevBtn').disabled = idx===0;
+  document.getElementById('nextBtn').disabled = idx===deck.length-1;
+  updateMarkButtons();
+  updateCardRibbon();
+  updateStats();
+  if (slideDir) {
+    const scene = document.getElementById('scene');
+    scene.classList.remove('slide-left','slide-right');
+    void scene.offsetWidth;
+    scene.classList.add(slideDir==='left'?'slide-left':'slide-right');
+  }
+}
+
+// ── MODAL ──
+function showModal() {
+  document.getElementById('modalBackdrop').classList.add('visible');
+  document.getElementById('modalCapture').style.display = '';
+  document.getElementById('modalThankyou').classList.remove('visible');
+  setTimeout(() => document.getElementById('emailInput').focus(), 350);
+}
+function hideModal() {
+  document.getElementById('modalBackdrop').classList.remove('visible');
+}
+function unlockSaveProgress() {
+  emailCaptured = true;
+  document.getElementById('saveIndicator').classList.add('visible');
+  document.getElementById('disclaimer').classList.add('visible');
+  document.getElementById('modalCapture').style.display = 'none';
+  document.getElementById('modalThankyou').classList.add('visible');
+}
+
+document.getElementById('modalSubmit').addEventListener('click', () => {
+  const val = document.getElementById('emailInput').value.trim();
+  if (!val || !val.includes('@')) {
+    document.getElementById('emailInput').focus();
+    document.getElementById('emailInput').style.borderColor = 'rgba(184,144,58,0.8)';
+    return;
+  }
+  // TODO: POST to your email platform (ConvertKit, Mailchimp, etc.)
+  console.log('Email captured:', val);
+  unlockSaveProgress();
+});
+document.getElementById('emailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('modalSubmit').click();
+  document.getElementById('emailInput').style.borderColor = '';
+});
+document.getElementById('modalDismiss').addEventListener('click', () => {
+  promptDismissed = true; deckCompleted = false; hideModal();
+});
+document.getElementById('modalSkip').addEventListener('click', () => {
+  promptDismissed = true; deckCompleted = false; hideModal();
+});
+document.getElementById('modalContinue').addEventListener('click', hideModal);
+document.getElementById('modalBackdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalBackdrop')) {
+    promptDismissed = true; deckCompleted = false; hideModal();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.code==='Escape' && document.getElementById('modalBackdrop').classList.contains('visible')) {
+    promptDismissed = true; deckCompleted = false; hideModal(); return;
+  }
+  if (e.code==='Space') { e.preventDefault(); flipCard(); }
+  if (e.code==='ArrowRight') navigate(1);
+  if (e.code==='ArrowLeft') navigate(-1);
+  if (e.key==='s'||e.key==='S') setMode(mode==='shuffle'?'sequential':'shuffle');
+});
+let tx=0;
+document.getElementById('scene').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.getElementById('scene').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50) navigate(dx<0?1:-1);
+},{passive:true});
+
+// ── SUPABASE CONFIG — replace with your project values ──
+const SUPABASE_URL  = 'https://qxdyhsuayzqcknxdkbim.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4ZHloc3VheXpxY2tueGRrYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNDE3NzcsImV4cCI6MjA5NTcxNzc3N30.pxHlv9EHZwkm8Fqe2eZuHBePWFjKIKs2UARdeji6ubo';
+
+// ── PROFANITY FILTER ──
+const PROFANITY = ['damn','hell','shit','fuck','ass','bitch','crap','piss','bastard','dick','cunt'];
+function hasProfanity(text) {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return PROFANITY.some(w => lower.includes(w));
+}
+
+// ── STAR HELPERS ──
+function revStarsHtml(rating) {
+  return Array.from({length:5}, (_,i) =>
+    `<span class="rev-star${i < rating ? '' : ' empty'}">★</span>`
+  ).join('');
+}
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── LOAD REVIEWS ──
+async function loadAppReviews() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/reviews?select=*&approved=eq.true&flagged=eq.false&order=created_at.desc`,
+      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+    );
+    if (!res.ok) throw new Error();
+    const reviews = await res.json();
+    renderAppReviews(reviews);
+  } catch {
+    document.getElementById('appReviewsLoading').textContent = '';
+  }
+}
+
+function renderAppReviews(reviews) {
+  document.getElementById('appReviewsLoading').style.display = 'none';
+  if (!reviews.length) {
+    document.getElementById('appReviewsEmpty').style.display = 'block';
+    return;
+  }
+  const avg = reviews.reduce((s,r) => s + r.rating, 0) / reviews.length;
+  document.getElementById('appAvgNum').textContent = avg.toFixed(1);
+  document.getElementById('appAvgStars').innerHTML = revStarsHtml(Math.round(avg));
+  document.getElementById('appAvgCount').textContent = `${reviews.length} review${reviews.length !== 1 ? 's' : ''}`;
+  document.getElementById('appReviewsSummary').style.display = 'flex';
+
+  const cards = document.getElementById('appReviewCards');
+  cards.innerHTML = reviews.map(r => `
+    <div class="review-card-app">
+      <div class="review-card-header">
+        <div class="review-card-name">${escHtml(r.name)}</div>
+        <div class="review-card-date">${formatDate(r.created_at)}</div>
+      </div>
+      <div class="review-card-stars">${revStarsHtml(r.rating)}</div>
+      ${r.comment ? `<p class="review-card-comment">"${escHtml(r.comment)}"</p>` : ''}
+      ${r.reply ? `
+        <div class="review-card-reply">
+          <span class="review-card-reply-label">Response from Engraved Verses</span>
+          <p class="review-card-reply-text">${escHtml(r.reply)}</p>
+        </div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ── APP STAR PICKER ──
+let appSelectedRating = 0;
+const appStars = document.querySelectorAll('.app-star-pick');
+appStars.forEach(s => {
+  s.addEventListener('mouseenter', () => appStars.forEach(x => x.classList.toggle('selected', +x.dataset.v <= +s.dataset.v)));
+  s.addEventListener('mouseleave', () => appStars.forEach(x => x.classList.toggle('selected', +x.dataset.v <= appSelectedRating)));
+  s.addEventListener('click', () => { appSelectedRating = +s.dataset.v; appStars.forEach(x => x.classList.toggle('selected', +x.dataset.v <= appSelectedRating)); });
+});
+
+// ── SUBMIT ──
+document.getElementById('appReviewSubmit').addEventListener('click', async () => {
+  const name    = document.getElementById('appReviewName').value.trim();
+  const comment = document.getElementById('appReviewComment').value.trim();
+  let valid = true;
+  document.getElementById('appNameError').style.display   = 'none';
+  document.getElementById('appRatingError').style.display = 'none';
+  document.getElementById('appSubmitError').style.display = 'none';
+  if (!name)              { document.getElementById('appNameError').style.display   = 'block'; valid = false; }
+  if (!appSelectedRating) { document.getElementById('appRatingError').style.display = 'block'; valid = false; }
+  if (!valid) return;
+
+  const flagged = hasProfanity(name) || hasProfanity(comment);
+  const btn = document.getElementById('appReviewSubmit');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/reviews`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${SUPABASE_ANON}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ name, rating: appSelectedRating, comment: comment || null, flagged })
+    });
+    if (!res.ok) throw new Error();
+    document.getElementById('appReviewFormInner').style.display = 'none';
+    document.getElementById('appReviewSuccess').style.display   = 'block';
+    loadAppReviews();
+  } catch {
+    document.getElementById('appSubmitError').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('appSubmitError').style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Submit Review';
+  }
+});
+
+loadAppReviews();
+if (localStorage.getItem('engraved-verse-email')) {
+  emailCaptured = true;
+  document.getElementById('saveIndicator').classList.add('visible');
+  document.getElementById('disclaimer').classList.add('visible');
+}
+document.getElementById('modalSubmit').addEventListener('click', () => {
+  const val = document.getElementById('emailInput')?.value?.trim();
+  if (val) localStorage.setItem('engraved-verse-email', '1');
+}, { once: true });
+
+renderCard();
+</script>
+</body>
+</html>
